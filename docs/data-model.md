@@ -37,6 +37,10 @@
 | createdAt | datetime | — | Дата создания |
 | updatedAt | datetime | — | Дата обновления |
 
+## ER-диаграмма
+<img width="1253" height="691" alt="image" src="https://github.com/user-attachments/assets/94aab7a9-079c-44e2-8173-fa67141e28bd" />
+
+
 ## Связи
 
 - Один **Site** — много **Ticket** (1:N).
