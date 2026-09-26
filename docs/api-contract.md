@@ -18,8 +18,21 @@
 ### POST /api/tickets — запрос
 
 ```json
-{
-  "title": "Стук в передней подвеске",
-  "siteId": 12,
-  "description": "При проезде неровностей слышен стук справа"
-}
+[
+  {
+    "id": 101,
+    "number": "T-2026-0101",
+    "title": "Стук в передней подвеске",
+    "status": "New",
+    "siteId": 12,
+    "assigneeUserId": null
+  },
+  {
+    "id": 102,
+    "number": "T-2026-0102",
+    "title": "Замена тормозных колодок",
+    "status": "InProgress",
+    "siteId": 7,
+    "assigneeUserId": 5
+  }
+]
