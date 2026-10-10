@@ -1,0 +1,18 @@
+# Зависимости Node
+node_modules/
+
+# Сборка Vite
+dist/
+.vite/
+
+# Локальные env-файлы
+.env
+.env.local
+
+# Системное
+.DS_Store
+Thumbs.db
+
+# Логи
+*.log
+npm-debug.log*
