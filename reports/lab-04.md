@@ -13,10 +13,10 @@ App.vue
 
 ## Скриншоты
 
-![Главная страница](image.png)
-![страница /new](image-1.png)
-![страница /login](image-2.png)
-![Дерево /src](image-3.png)
+![Главная страница](lab-04-main.png)
+![страница /new](lab-04-new.png)
+![страница /login](lab-04-login.png)
+![Дерево /src](lab-04-src.png)
 
 ## Данные
 
