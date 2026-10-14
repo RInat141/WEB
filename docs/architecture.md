@@ -4,8 +4,8 @@
 
 **архитектура web-ИС семестра**
 
-Клиент **Vue 3 + Vite** — `localhost:5173`.
-Сервер **ASP.NET Core** — `localhost:5000`.
+Клиент(fronted) **Vue 3 + Vite** — `localhost:5173`.
+Сервер(backend) **ASP.NET Core** — `localhost:5000`.
 База **PostgreSQL** — обычно `:5432`.
 
 Прямой стрелки от браузера к PostgreSQL нет — иначе клиент получил бы
