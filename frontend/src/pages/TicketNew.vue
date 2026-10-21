@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { addItem } from '../ticketsStore.js'
+import { createTicket } from '../api/tickets.js'
+import { items } from '../ticketsStore.js'
 
 const router = useRouter()
 
@@ -11,11 +12,9 @@ const form = ref({
   description: ''
 })
 
-const errors = ref({
-  title: '',
-  siteId: '',
-  description: ''
-})
+const errors = ref({ title: '', siteId: '', description: '' })
+const submitError = ref('')
+const isSubmitting = ref(false)
 
 function validate() {
   errors.value = { title: '', siteId: '', description: '' }
@@ -42,19 +41,36 @@ function validate() {
   return ok
 }
 
-function onCreate() {
+async function onCreate() {
+  if (isSubmitting.value) return
   if (!validate()) return
 
-  addItem({
-    title: form.value.title.trim(),
-    siteId: form.value.siteId,
-    description: form.value.description.trim()
-  })
+  isSubmitting.value = true
+  submitError.value = ''
 
-  // Сброс формы и переход на список
-  form.value = { title: '', siteId: 0, description: '' }
-  errors.value = { title: '', siteId: '', description: '' }
-  router.push('/')
+  try {
+    const created = await createTicket({
+      title: form.value.title.trim(),
+      siteId: form.value.siteId,
+      description: form.value.description.trim()
+    })
+    // созданный объект берём из ответа (id, number, status приходят с сервера)
+    items.value.push(created)
+    form.value = { title: '', siteId: 0, description: '' }
+    errors.value = { title: '', siteId: '', description: '' }
+    router.push('/')
+  } catch (e) {
+    submitError.value = describeError(e)
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+function describeError(e) {
+  if (e.status === 0) return 'Нет связи с сервером'
+  if (e.status === 400) return 'Проверьте поля'
+  if (e.status === 500) return 'Сервер не смог обработать запрос'
+  return `Ошибка: ${e.message || 'неизвестно'}`
 }
 </script>
 
@@ -65,29 +81,33 @@ function onCreate() {
     <form @submit.prevent="onCreate">
       <p>
         <label for="title">Тема (5–80 символов)</label><br />
-        <input id="title" name="title" v-model="form.title" autofocus />
+        <input id="title" name="title" v-model="form.title" autofocus :disabled="isSubmitting" />
         <br />
         <small v-if="errors.title" style="color: #b00020">{{ errors.title }}</small>
       </p>
 
       <p>
         <label for="siteId">Участок (siteId, целое &gt; 0)</label><br />
-        <input id="siteId" name="siteId" type="number" v-model.number="form.siteId" />
+        <input id="siteId" name="siteId" type="number" v-model.number="form.siteId" :disabled="isSubmitting" />
         <br />
         <small v-if="errors.siteId" style="color: #b00020">{{ errors.siteId }}</small>
       </p>
 
       <p>
         <label for="description">Описание (10–500 символов)</label><br />
-        <textarea id="description" name="description" v-model="form.description"></textarea>
+        <textarea id="description" name="description" v-model="form.description" :disabled="isSubmitting"></textarea>
         <br />
         <small v-if="errors.description" style="color: #b00020">{{ errors.description }}</small>
       </p>
 
-      <button type="submit">Создать</button>
+      <button type="submit" :disabled="isSubmitting">
+        {{ isSubmitting ? 'Создаём…' : 'Создать' }}
+      </button>
+
+      <p v-if="submitError" style="color: #b00020">{{ submitError }}</p>
     </form>
 
-    <p><small>Запись живёт только в памяти. После F5 исчезнет — это ожидаемо.</small></p>
+    <p><small>Mock: данные живут только в памяти. F5 — исчезнут, это ожидаемо.</small></p>
   </main>
 </template>
 
@@ -111,5 +131,9 @@ textarea {
 small {
   display: inline-block;
   margin-top: 4px;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

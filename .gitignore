@@ -16,3 +16,7 @@ Thumbs.db
 # Логи
 *.log
 npm-debug.log*
+
+# Локальные переменные окружения — не в Git
+.env
+.env.local
