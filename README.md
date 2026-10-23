@@ -5,3 +5,12 @@
 Группа: ТРИС-3-23
 Стек: (Vue 3 + ASP.NET Core + PostgreSQL — код позже)
 Статус темы: 
+
+## Запуск backend (ASP.NET Core)
+
+Нужен .NET SDK 8 или новее.
+
+```bash
+cd backend
+dotnet restore
+dotnet run
