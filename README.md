@@ -14,3 +14,13 @@
 cd backend
 dotnet restore
 dotnet run
+
+## Маршруты API (ЛР8)
+
+- `POST /api/tickets` — создать заявку (201)
+- `GET /api/tickets` — список (200, `[]` если пусто)
+- `GET /api/tickets/{id}` — одна заявка (200 / 404)
+- `PATCH /api/tickets/{id}/assignee` — назначить исполнителя (200 / 404)
+- `PATCH /api/tickets/{id}/status` — сменить статус (200 / 400 / 404 / 409)
+
+Данные пока в памяти — после перезапуска пропадут. PostgreSQL появится позже.

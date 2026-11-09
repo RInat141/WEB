@@ -1,0 +1,120 @@
+{
+  "info": {
+    "name": "Tickets API (ЛР8)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. POST Создать заявку (201)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Не запускается сервер\",\n  \"siteId\": 2,\n  \"description\": \"При включении нет POST, вентиляторы не вращаются\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets"]
+        }
+      }
+    },
+    {
+      "name": "2. POST Ошибка 400 (Короткое описание)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"abc\",\n  \"siteId\": 2,\n  \"description\": \"str\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets"]
+        }
+      }
+    },
+    {
+      "name": "3. GET Список заявок (200)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets"]
+        }
+      }
+    },
+    {
+      "name": "4. GET Одна заявка (404)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/999",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "999"]
+        }
+      }
+    },
+    {
+      "name": "5. PATCH Назначить исполнителя (200)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"assigneeUserId\": 5\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/1/assignee",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "1", "assignee"]
+        }
+      }
+    },
+    {
+      "name": "6. PATCH Сменить статус (409 - нет исполнителя)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"InProgress\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/tickets/1/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "tickets", "1", "status"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    }
+  ]
+}

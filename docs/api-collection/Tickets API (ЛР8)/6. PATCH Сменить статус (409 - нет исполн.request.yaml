@@ -1,0 +1,13 @@
+$kind: http-request
+name: 6. PATCH Сменить статус (409 - нет исполнителя)
+url: "{{baseUrl}}/api/tickets/1/status"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "status": "InProgress"
+    }
+order: 6000

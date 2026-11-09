@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/api/tickets/1/assignee"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "assigneeUserId": 5
+    }
+order: 5000

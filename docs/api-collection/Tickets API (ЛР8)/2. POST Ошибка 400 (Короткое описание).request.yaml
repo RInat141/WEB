@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/api/tickets"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "title": "abc",
+      "siteId": 2,
+      "description": "str"
+    }
+order: 2000

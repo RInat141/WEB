@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{baseUrl}}/api/tickets/999"
+method: GET
+order: 4000

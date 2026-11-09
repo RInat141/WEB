@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/api/tickets"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "title": "Не запускается сервер",
+      "siteId": 2,
+      "description": "При включении нет POST, вентиляторы не вращаются"
+    }
+order: 1000
