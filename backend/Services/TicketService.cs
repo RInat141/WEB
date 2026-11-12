@@ -1,91 +1,76 @@
+using backend.Data;
 using backend.Dtos;
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
 public class TicketService : ITicketService
 {
-    private readonly List<Ticket> _tickets = new();
-    private int _nextId = 1;
+    private readonly AppDbContext _db;
 
-    public TicketService()
+    public TicketService(AppDbContext db)
     {
-        // Тестовые записи для наглядности
-        _tickets.Add(new Ticket
-        {
-            Id = _nextId++,
-            Number = $"T-2026-{_nextId:D4}",
-            Title = "Не запускается сервер",
-            Description = "При включении нет POST, вентиляторы не вращаются",
-            Status = "New",
-            SiteId = 2,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        });
-        _tickets.Add(new Ticket
-        {
-            Id = _nextId++,
-            Number = $"T-2026-{_nextId:D4}",
-            Title = "Замена SSD в рабочей станции",
-            Description = "Диск сыпется, нужна замена",
-            Status = "InProgress",
-            SiteId = 1,
-            AssigneeUserId = 5,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        });
+        _db = db;
     }
 
     public List<TicketResponse> GetAll() =>
-        _tickets.Select(ToResponse).ToList();
+        _db.Tickets.Select(ToResponse).ToList();
 
     public TicketResponse? GetById(int id)
     {
-        var t = _tickets.FirstOrDefault(x => x.Id == id);
+        var t = _db.Tickets.Find(id);
         return t is null ? null : ToResponse(t);
     }
 
     public TicketResponse Create(CreateTicketRequest request)
     {
+        // Получаем следующий ID для красивого номера (упрощенно)
+        var nextId = (_db.Tickets.Max(t => (int?)t.Id) ?? 0) + 1;
+        
         var ticket = new Ticket
         {
-            Id = _nextId,
-            Number = $"T-2026-{_nextId:D4}",
+            Number = $"T-2026-{nextId:D4}",
             Title = request.Title.Trim(),
             Description = request.Description.Trim(),
             Status = "New",
             SiteId = request.SiteId,
+            CreatedByUserId = 1, // Упрощенно: жестко задаем создателя
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
-        _nextId++;
-        _tickets.Add(ticket);
+        
+        _db.Tickets.Add(ticket);
+        _db.SaveChanges();
         return ToResponse(ticket);
     }
 
     public TicketResponse? Assign(int id, int assigneeUserId)
     {
-        var t = _tickets.FirstOrDefault(x => x.Id == id);
+        var t = _db.Tickets.Find(id);
         if (t is null) return null;
+        
         t.AssigneeUserId = assigneeUserId;
         t.UpdatedAt = DateTime.UtcNow;
+        _db.SaveChanges();
         return ToResponse(t);
     }
 
     public (TicketResponse? ticket, int? errorCode) ChangeStatus(int id, string status)
     {
-        var t = _tickets.FirstOrDefault(x => x.Id == id);
+        var t = _db.Tickets.Find(id);
         if (t is null) return (null, 404);
 
         var allowed = new[] { "New", "InProgress", "Closed", "Cancelled" };
         if (!allowed.Contains(status)) return (null, 400);
 
-        // Правило процесса: нельзя InProgress без исполнителя
         if (status == "InProgress" && t.AssigneeUserId is null)
             return (null, 409);
 
         t.Status = status;
         t.UpdatedAt = DateTime.UtcNow;
+        _db.SaveChanges();
+        
         return (ToResponse(t), null);
     }
 
